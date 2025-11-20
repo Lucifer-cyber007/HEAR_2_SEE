@@ -1,119 +1,58 @@
-🎬🔊 Hear2See — Audio → Prompt → Video (Offline + Diffusion)
+Hear2See — Audio → Prompt → Video 🎬🔊→🎥
 
-Hear2See is a fully offline, modular system that converts audio → transcript → video, combining:
+Hear2See converts audio into short AI-generated videos. It transcribes uploaded/recorded audio using an offline Vosk ASR model, converts the transcript into a text prompt (editable), and then generates frames with a text-to-image diffusion model (Stable Diffusion 1.5 + optional LoRA). Frames are stitched into an MP4 video.
 
-Vosk 0.15 Offline ASR
+Features
 
-Stable Diffusion (fused SD-1.5) with optional LoRA
+Offline transcription using Vosk (no external API).
 
-Gradio UI frontend
+Editable prompt interface: auto-generate prompt from transcript, then edit.
 
-Automatic audio/video saving + metadata logging
+Text → video generation via Stable Diffusion (fused SD1.5) with LoRA support.
 
-Colab-friendly launcher
+Save input audio, generated frames, and final MP4 files to Drive / disk.
 
-This repository includes a clean, production-ready modular codebase and a complete folder structure for running and extending Hear2See.
+Colab-friendly or local development (GPU recommended for generation).
 
-🚀 Features
-🔊 Speech → Text (Offline)
+Gradio frontend (Blocks) with step-by-step flow (Transcribe → Edit → Generate).
 
-Uses Vosk 0.15 small model (40MB)
+Slow-mode option (halves FPS for clearer frame viewing).
 
-No internet required
-
-Converts any uploaded/recorded audio (WAV, MP3, M4A, OGG, FLAC)
-
-Auto-normalizes audio to 16kHz WAV internally
-
-📝 Text → Prompt
-
-Automatic prompt builder (cinematic / anime / realistic)
-
-Users can edit transcript before generating video
-
-🎥 Text → Video (Diffusion)
-
-Uses Stable Diffusion 1.5 fused model (local folder)
-
-Frame-by-frame rendering
-
-Video stitching using ffmpeg
-
-Slow Mode (½ FPS)
-
-💾 Storage Engine
-
-Saves uploaded audio to data/input_audio/
-
-Saves videos to data/output_videos/
-
-Stores frames optionally
-
-Logs all runs to data/metadata.jsonl
-
-🖥️ UI & Deployment
-
-Gradio Blocks UI (fully responsive)
-
-Robust launcher for Colab (port management, queue compatibility)
-
-Local launcher for desktop use
-
+Metadata logging (per-run JSONL).
 📁 Repository Structure
 hear2see/
-│
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-│
 ├── app/
 │   ├── __init__.py
-│   ├── ui.py                      # Full Gradio frontend (Blocks)
-│   ├── transcription.py           # Vosk ASR logic
-│   ├── video_generation.py        # Stable Diffusion rendering backend
-│   ├── storage.py                 # Audio/video saving + metadata
-│   ├── utils.py                   # Prompt builder + helpers
-│   └── launcher_local.py          # Local/Colab safe launcher
-│
+│   ├── ui_frontend.py           # Gradio UI (Blocks) — main frontend
+│   ├── transcription.py         # Vosk logic: load model, transcribe, save audio
+│   ├── video_generation.py      # SD + LoRA rendering: frames → MP4
+│   ├── storage.py               # Save audio/video/frames + metadata
+│   ├── utils.py                 # helpers: prompt builder, audio converters
+│   └── launcher.py              # robust Gradio launcher for Colab/local
 ├── models/
-│   └── vosk-model-small-en-us-0.15/   # Official Vosk ASR model directory
-│
+│   └── vosk-model-small-en-us-0.15/    # Vosk official small model (0.15)
 ├── diffusion/
-│   ├── sd_fused_model/            # Stable Diffusion 1.5 model folder (user provided)
-│   └── lora_out/                  # (Optional) LoRA weights + training logs
-│       ├── pytorch_lora_weights.safetensors
-│       ├── training_args.json
-│       ├── logs/
-│       └── samples/
-│
+│   ├── sd_fused_model/          # fused SD1.5 model dir (user-provided)
+│   └── lora_out/                # LoRA weights (optional)
 ├── data/
-│   ├── input_audio/               # All saved audio files
-│   ├── output_videos/             # All generated videos
-│   ├── frames/                    # (Optional) saved individual frames
-│   └── metadata.jsonl             # One JSON record per generation
-│
+│   ├── input_audio/
+│   ├── frames/
+│   ├── output_videos/
+│   └── metadata.jsonl
 ├── notebooks/
-│   ├── Hear2See_Frontend_Colab.ipynb     # Full working Colab notebook
-│   ├── LoRA_Training_Notebook.ipynb      # For fine-tuning LoRA
-│   ├── Diagnostics_Vosk.ipynb            # For fixing/validating ASR models
-│   └── Experiments/
-│
+│   ├── Hear2See_Frontend_Colab.ipynb
+│   └── Diagnostics_Vosk.ipynb
 ├── scripts/
-│   ├── download_vosk.sh             # Script to download Vosk 0.15 small model
-│   ├── convert_audio.sh             # Batch 16kHz conversion helper
-│   └── train_lora.sh                # CLI LoRA training boilerplate
-│
+│   ├── download_vosk.sh
+│   └── convert_audio.sh
 ├── server/
-│   ├── main.py                      # (Optional) FastAPI backend
-│   └── api/
-│       ├── transcription_api.py
-│       ├── video_api.py
-│       └── health_check.py
-│
+│   └── main.py                  # optional FastAPI server
 └── assets/
     ├── logo.png
-    ├── sample_audio/
-    └── sample_output/
+    └── sample_audio/
 
 
 🔧 Installation
