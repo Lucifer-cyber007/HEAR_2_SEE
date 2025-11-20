@@ -1,0 +1,11 @@
+
+gradio>=4.0
+vosk
+torch
+diffusers
+transformers
+accelerate
+numpy
+pillow
+ffmpeg-python
+safetensors
